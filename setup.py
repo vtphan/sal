@@ -10,5 +10,4 @@ setup(
     license='MIT',
     description='A storage abstraction layer.',
     long_description='A storage abstraction layer.',
-    install_requires=[],
 )
