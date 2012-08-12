@@ -15,6 +15,14 @@ class TOP (object):
 		raise NotImplementedError
 
 #---------------------------------------------------------------------------
+class AlwaysTrue (TOP):
+	def __init__(self):
+		super(AlwaysTrue, self).__init__('AlwaysTrue')
+
+	def __call__(self, *params):
+		return True
+
+#---------------------------------------------------------------------------
 class Not (TOP):
 	def __init__(self):
 		super(Not,self).__init__('Not')
@@ -42,7 +50,7 @@ class And (TOP):
 #---------------------------------------------------------------------------
 class Chain (TOP):
 	def __init__(self, *op):
-		self.op = op if op else lambda v: True
+		self.op = op if op else AlwaysTrue()
 		super(Chain,self).__init__(','.join(o.name for o in op))
 
 	def __call__(self, v):
@@ -196,8 +204,8 @@ class Float (Type):
 		super(Float,self).__init__('Float')
 
 	def __call__(self, v):
-		if isinstance(v,float):
-			self.v = v
+		if isinstance(v,(float,int,long)):
+			self.v = float(v)
 			return True
 		if isinstance(v, basestring):
 			try:
@@ -211,7 +219,7 @@ class Float (Type):
 #---------------------------------------------------------------------------
 class String (Type):
 	def __init__(self, m=None, n=None):
-		self.validator = None
+		self.validator = AlwaysTrue()
 		if isinstance(m,int):
 			if isinstance(n,int):
 				self.validator = Chain(LengthAtLeast(m), LengthAtMost(n))
@@ -222,7 +230,7 @@ class String (Type):
 
 	def __call__(self, v):
 		if isinstance(v,basestring):
-			if self.validator is None or self.validator(v):
+			if self.validator(v):
 				self.v = v
 				return True
 		self.v = None
