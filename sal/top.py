@@ -175,10 +175,13 @@ class Type (TOP):
 		self.v = None
 		super(Type,self).__init__(name)
 
+	def get_v(self):
+		return self.v
+
 	def set_v(self, v):
 		self.v = v
 
-	value = property(lambda: self.v, set_v)
+	value = property(get_v, set_v)
 
 #---------------------------------------------------------------------------
 class Int (Type):
